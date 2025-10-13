@@ -1,0 +1,191 @@
+
+---
+### 📄 **README.md**
+
+```markdown
+# 🕒 UTC WebSocket Service
+
+A lightweight WebSocket service that streams the **current UTC time** every second.  
+Built with Node.js and `ws`, ready for local testing, Docker deployment, or Dokploy hosting.
+
+---
+
+## 🚀 Features
+- Sends UTC timestamp (`ISO 8601` format) to all connected clients every second.  
+- Lightweight — pure Node.js, no frameworks.  
+- Works locally (`ws://`) or with SSL proxy (`wss://`).  
+- Easily deployable via Docker, Docker Compose, or Dokploy.
+
+---
+
+## 🧱 Project Structure
+```
+
+utc-websocket/
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+└── server.js
+
+````
+
+---
+
+## ⚙️ Installation (Local)
+
+### 1. Install dependencies
+```bash
+npm install
+````
+
+### 2. Run the server
+
+```bash
+node server.js
+```
+
+Expected output:
+
+```
+✅ UTC WebSocket running on port 9090
+```
+
+### 3. Test connection (using wscat)
+
+```bash
+npm install -g wscat
+wscat -c ws://localhost:9090
+```
+
+Expected:
+
+```
+connected (press CTRL+C to quit)
+< {"utc":"2025-10-14T00:15:35.103Z"}
+< {"utc":"2025-10-14T00:15:36.103Z"}
+...
+```
+
+---
+
+## 🐳 Docker Setup
+
+### 1. Build the image
+
+```bash
+docker build -t utc-websocket .
+```
+
+### 2. Run the container
+
+```bash
+docker run -d -p 9090:9090 --name utc-websocket utc-websocket
+```
+
+Now it’s available at:
+
+```
+ws://localhost:9090
+```
+
+---
+
+## 🧩 Docker Compose Setup
+
+### 📄 docker-compose.yml
+
+```yaml
+version: "3.8"
+
+services:
+  utc-websocket:
+    container_name: utc-websocket
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      - PORT=9090
+    restart: unless-stopped
+```
+
+### Run it:
+
+```bash
+docker compose up -d
+```
+
+Then open:
+
+```
+ws://localhost:9090
+```
+
+---
+
+## ☁️ Deploying on Dokploy
+
+1. Create a **New Web Service**
+2. Use your Git repository containing this project
+3. Set:
+
+   * **Build Command:** `npm install`
+   * **Start Command:** `npm start`
+   * **Port:** `9090`
+4. Deploy 🚀
+
+You can then access it using:
+
+```
+wss://your-domain.com
+```
+
+---
+
+## 🧠 Example Client (HTML)
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>UTC Time Client</title></head>
+<body>
+  <h2>Current UTC Time:</h2>
+  <pre id="utc"></pre>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:9090");
+    ws.onmessage = e => {
+      const { utc } = JSON.parse(e.data);
+      document.getElementById("utc").textContent = utc;
+    };
+  </script>
+</body>
+</html>
+```
+
+---
+
+## ⚠️ Notes
+
+* Use `ws://` locally (no SSL).
+* Use `wss://` when behind a reverse proxy (e.g., Nginx with HTTPS).
+* Default port is **9090**.
+  You can change it via environment variable:
+
+  ```bash
+  PORT=7070 node server.js
+  ```
+
+---
+
+## 🧾 License
+
+MIT — free to use, modify, and deploy.
+
+---
+
+```
+
+---
+
+تحب أجهزلك نسخة `.zip` فيها كل الملفات (server.js + package.json + Dockerfile + docker-compose.yml + README.md) وتقدر ترفعها مباشرة على Dokploy أو GitHub؟
+```
