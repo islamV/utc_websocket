@@ -12,5 +12,9 @@ wss.on("connection", (ws) => {
     ws.send(JSON.stringify({ utc }));
   }, 1000);
 
-  ws.on("close", () => clearInterval(interval));
+  ws.on("close", () => {
+    clearInterval(interval);
+    console.log("Client disconnected");
+  });
 });
+
